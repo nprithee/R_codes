@@ -1,0 +1,143 @@
+---
+title: "R - Assignment Mod 2 Week 2"
+author: "Nusrat J Prithee"
+date: "01-28-2022"
+output:
+  html_document:default
+---
+
+
+
+
+```{r setup, include=FALSE}
+# some of common options (and the defaults) are: 
+# include=T, eval=T, echo=T, results='hide'/'asis'/'markup',..., collapse=F, warning=T, message=T, error=T, cache=T, fig.width=6, fig.height=4, fig.dim=c(6,4) #inches, fig.align='left'/'center','right', 
+# knitr::opts_chunk$set(warning = F, results = "markup", message = F)
+knitr::opts_chunk$set(warning = F, results = "hide", message = F)
+# knitr::opts_chunk$set(include = F)
+# knitr::opts_chunk$set(echo = TRUE)
+options(scientific=T, digits = 3) 
+# options(scipen=9, digits = 3) 
+# ‘scipen’: integer. A penalty to be applied when deciding to print numeric values in fixed or exponential notation.  Positive values bias towards fixed and negative towards scientific notation: fixed notation will be preferred unless it is more than ‘scipen’ digits wider.
+# use scipen=999 to prevent scientific notation at all times
+```
+
+
+
+# HW - Module 2 week 02
+
+## Q1. 
+Read in the file with all the baseball players height, weight and age info (BaseballHeightWeight.csv) as a dataframe and save it as baseball. Then display the structure of the dataframe.
+
+```{r Q1, echo=FALSE, warning=TRUE}
+
+baseball<-data.frame(read.csv("BaseballHeightWeight.csv"))
+str(baseball)
+```
+ Here in out put find 1034 objects and 6 variables are showed. Height.inches, weight.pounds are integer variable, Age is number, Name,Team,Position are char variable. read() function read data from cvs file. str() function provid the structure of baseball object.
+
+## Q2. 
+print out the first 5 and the last 3 rows of the dataframe
+
+```{r Q2, echo=FALSE, warning=TRUE}
+head(baseball,n=5)
+tail(baseball,n=3)
+```
+head() function use to get first 5 rows of the table,tail() function use to get last 3 rows from the table.
+## Q3. 
+Change the headers/column names from Weight.pounds. to weight, from Height.inches. to height, and Age to age.
+
+```{r Q3, warning=TRUE}
+colnames(baseball)[4:6]=c("height","weight","age")
+```
+No output will be shown. It will change the name of column4 to Column6 from data table.
+## Q4. 
+Print out the first two lines again to see the new column names.
+```{r Q4, echo=FALSE, warning=TRUE}
+head(baseball,n=2)
+
+```
+New column names are found in output.
+## Q5. 
+Find the statistics (summary) of the heights, weights, and ages of the players. Using complete sentences, give the reader these summary.
+```{r Q5, echo=FALSE, warning=TRUE}
+summary(baseball$height)
+summary(baseball$weight)
+summary(baseball$age)
+
+
+```
+Summary() function provids the statistics of three variables. Min,Max,Mean, Median ,1st Qu., 2nd Qu is shown as an output.And weight data shows NA value.
+
+## Q6. 
+You should find an issue with the weight data with an NA value. Use the subset( ) function, select that data point (save as shyboy) and find out who the shy boy was.
+```{r Q6, echo=FALSE, warning=TRUE}
+shyboy= subset(baseball,is.na(weight))
+str(shyboy)
+
+```
+Here subset() shows the row in output where weight has NA value.  
+## Q7. 
+Remove shyboy from baseball, and then show the number of observations of the cleaned up dataframe baseball.
+```{r Q7, message=TRUE, warning=TRUE}
+baseball= subset(baseball,weight>0)
+str(baseball)
+
+```
+There are 1033 object found after removing NA value.
+
+## Q8. 
+Make a quick boxplot of the weight of the players. Use the title( ) function immediately to add a title to the chart. (Try color #0000FF for blue.)
+```{r Q8, echo=FALSE, warning=TRUE}
+boxplot(baseball$weight,main="Baseball player weight boxplot",ylab="weight(lbs)",col = '#0000FF')
+
+```
+
+main is used to give the title, ylab is for lebel y axis and color.   blue box is found in output. 
+## Q9. 
+Make a histogram of the weight of the players. Try color 'green' this time. The function understands the word 'green' just fine. Give it a better title than the default. Does the distribution looks normal?
+```{r Q9, echo=FALSE, warning=TRUE}
+hist(baseball$weight,main = "Histogram of baseball player weight",col = ('green'))
+
+```
+histogram looks like a bell shape. 
+
+## Q10. 
+Use ggplot, make a plot with weights vs heights of the players, color by Teams. Give it an appropriate title.
+```{r Q10, echo=FALSE, warning=TRUE}
+library("ggplot2")
+ggplot(data=baseball)+ 
+  geom_point(mapping=aes(x=height,y=weight,color=Team))+
+  ggtitle("Scatter plot of baseball player weight(y) vs height(x)")
+
+```
+geom_point() function is used to create scatterplotss. Weight is in Y axis, height is in x axis. team is represented by color.
+## Q11. 
+Make a plot with weights vs heights of the players, color by age
+```{r Q11, echo=FALSE, warning=TRUE}
+library("ggplot2")
+ggplot(data=baseball)+ 
+  geom_point(mapping=aes(x=height,y=weight,color=age))+
+  ggtitle("Scatter plot of baseball player weight(y) vs height(x)")
+
+```
+Age has numeric value. Color has changed due to numeric value.
+
+## Q12. 
+Obtain a subset of the data with only Team Washington. Using complete sentences, give the number of players in Team Washington.
+```{r Q12, echo=FALSE, warning=TRUE}
+teamwash <- subset(baseball,Team =='WAS')
+str(teamwash)
+
+```
+
+There are 36 player in team Washington.
+## Q13. 
+Obtain another subset with Team Washington and only players older than 28. How many are there in this veteran group?
+```{r Q13, echo=FALSE, message=TRUE, warning=TRUE, paged.print=FALSE}
+teamwash <- subset(baseball,Team =='WAS' & age>28)
+str(teamwash)
+
+```
+
+There are 14 player older than 28 in team Washington.

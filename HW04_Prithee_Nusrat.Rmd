@@ -1,0 +1,124 @@
+
+title: "R - Assignment Mod 2 Week 3 - Pizza EDA"
+author: "Nusrat J Prithee"
+date: "02-04-2022"
+
+output:
+  html_document:default
+
+## Pizza Ingredient dataset
+
+### Question 1  
+**Import the dataset into R.**   
+```{r}
+library(ezids)
+```
+
+```{r}
+pizza = data.frame(read.csv("Pizza.csv"))
+str(pizza)
+```
+read.csv()function use to read the dataset. There are 300 object and 9 variables
+
+### Question 2  
+**How many data points are there?**  
+You can use the `length()` or `nrow()` function.  
+
+```{r}
+row<-nrow(pizza)
+column<-ncol(pizza)
+datapoint<- row*column
+str(datapoint)
+
+```
+There are 2700 data point in this dataset.
+ 
+
+### Question 3  
+**Look at the summary statistics of the dataset.**  
+Use the `xkablesummary()` function?
+
+```{r}
+xkablesummary(pizza[3:9], title = "Pizaa summary of selected statistics" )
+
+
+```
+The summary statistic shows the min,max,q1,q3,mean value of mois,prot,fat,sodium,cal,crab,ash
+
+
+### Question 4 
+**Make Plots**  
+For sodium and calorie, make histograms, boxplots (using `ggplot()`), and QQ-plots (just regular `qqnorm()` function). Make sure all plots have appropriate titles, x- and y- labels, units on the axes if applicable. It is also much nicer to add some color to your charts instead of plain old black and white. For chart titles, if no appropriate title you can think of, just use y vs x. Don’t get mixed up (somehow I find up to half of the presentations have the wrong ones). It is NEVER x vs y. **Always y vs x**.
+
+```{r}
+library("ggplot2")
+
+
+ggplot(data=pizza, aes(pizza$sodium)) + 
+  geom_histogram( col="red", 
+                 fill="green") + 
+  labs(title="Histogram of Sodium in Pizza using `ggplot`") +
+  labs(x="Values (gram)", y="Frequency")
+
+ggplot(data=pizza, aes(pizza$cal)) + 
+  geom_histogram( col="orange", 
+                 fill="blue") + 
+  labs(title="Histogram of calorie in Pizza using `ggplot`") +
+  labs(x="Values (gram)", y="Frequency")
+                                                                                     
+
+```
+The histogram look like normal distibution.
+```{r}
+library("ggplot2")
+ggplot(pizza, aes(y=sodium)) + 
+  geom_boxplot() + 
+  geom_boxplot( colour="orange", fill="blue", outlier.colour="red", outlier.shape=8, outlier.size=4) +
+  labs(title="boxplot of Sodium in Pizza `ggplot`",x="sodium", y = "value(gram)")
+
+ggplot(pizza, aes(y=cal)) + 
+  geom_boxplot() + 
+  geom_boxplot( colour="orange", fill="green", outlier.colour="red", outlier.shape=8, outlier.size=4) +
+  labs(title="boxplot of calorie in Pizza `ggplot`",x="calorie", y = "value(gram)")
+
+
+```
+The plot of both variables looks symmetric.
+```{r}
+qqnorm(pizza$sodium, main = "Sodium Q-Q Plot", ylab="Value",col="violet") 
+qqline(pizza$sodium)
+qqnorm(pizza$cal, main = "calorie Q-Q Plot", ylab="Value",col="green") 
+qqline(pizza$cal)
+
+
+
+```
+The distribution of sodium is right-skewed, calorie is left-skewed.
+
+### Question 5 
+**Outliers**  
+Use the `ezids::outlierKD2()` function to remove the outliers for sodium, then run the function again to remove outliers on calories. Re-do the QQ-plots for these two variables. Do you see much improvements?
+```{r}
+
+outlierKD2(pizza, sodium, FALSE, TRUE, TRUE, TRUE)
+  pizza = outlierKD2(pizza, sodium, TRUE, TRUE, TRUE, TRUE)
+ pizzanew = outlierKD2(pizza, sodium, TRUE)
+ 
+ outlierKD2(pizza, cal, FALSE, TRUE, TRUE, TRUE)
+  pizza = outlierKD2(pizza, cal, TRUE, TRUE, TRUE, TRUE)
+ pizzanew = outlierKD2(pizza, cal, TRUE)
+
+
+```
+The outlinerKD2() function remove the outliers. The output shows with outliers and without outliers.
+```{r}
+qqnorm(pizza$sodium, main = "Sodium Q-Q Plot", ylab="Value",col="violet") 
+qqline(pizza$sodium)
+qqnorm(pizza$cal, main = "calorie Q-Q Plot", ylab="Value",col="green") 
+qqline(pizza$cal)
+
+
+
+```
+After remove the outliers distribution of sodium is still right-skewed,though the shape has changed.calorie is still left-skewed.
+

@@ -1,0 +1,186 @@
+---
+title: "R - Assignment Mod 2 Week 4 - Estimation"
+author: "Nusrat J Prithee"
+date: "02-11-2022"
+
+output:
+  html_document:default
+ 
+---
+
+```{r init, include=FALSE}
+# some of common options (and the defaults) are: 
+# include=T, eval=T, echo=T, results='hide'/'asis'/'markup',..., collapse=F, warning=T, message=T, error=T, cache=T, fig.width=6, fig.height=4, fig.dim=c(6,4) #inches, fig.align='left'/'center','right', 
+library(ezids)
+# knitr::opts_chunk$set(warning = F, results = "markup", message = F)
+knitr::opts_chunk$set(warning = F, results = "hide", message = F)
+options(scientific=T, digits = 3) 
+# options(scipen=9, digits = 3) 
+# ‘scipen’: integer. A penalty to be applied when deciding to print numeric values in fixed or exponential notation.  Positive values bias towards fixed and negative towards scientific notation: fixed notation will be preferred unless it is more than ‘scipen’ digits wider.
+# use scipen=999 to prevent scientific notation at all times
+```
+
+# HW Assignment - Estimation 
+
+
+## Grad School Admissions
+
+### Question 1  
+
+**After importing the dataset as Adata, check the structure. Make sure admit and rank are stored as factors, instead of numeric or integers. (Hint: Use as.factor() function or factor() function).**
+
+```{r echo=FALSE}
+Adata<- read.csv("LogRegAdmit.csv")
+Adata$admit <- as.factor(Adata$admit)
+Adata$rank <- as.factor(Adata$rank)
+str(Adata)
+```
+as.factor() function convert the numeric value to factors. Admit and rank are the factor in the output.
+
+
+### Question 2  
+**Construct t-intervals for the gre and gpa data for all applicants at 0.80 level and 0.99 level. **
+
+```{r}
+ttest99 = t.test(x=Adata$gre, conf.level=0.99 )
+ttest99
+ttest99$conf.int
+ttest80 = t.test(x=Adata$gre, conf.level=0.80 )
+ttest80
+ttest80$conf.int
+
+```
+Confidence interval of gre is found 572.751 602.649 at 0.99 level; Confidence interval of gre is found 580.2857 595.1143 at 0.80 level. 
+```{r}
+ttest99 = t.test(x=Adata$gpa, conf.level=0.99 )
+ttest99
+ttest99$conf.int
+ttest80 = t.test(x=Adata$gpa, conf.level=0.80 )
+ttest80
+ttest80$conf.int
+
+```
+Confidence interval of gpa is found 3.340651 3.439149 at 0.99 level; Confidence interval of gpa is found 3.365474 3.414326 at 0.80 level. 
+
+### Question 3  
+**Repeat the same calculation for gre in Question 2 but for admitted (1) and rejected (0) separately. (You can subset them first.) Between the admitted and rejected, does the two intervals overlap at 0.80 level? And at 0.99 level?**
+
+```{r}
+
+admitted=Adata[Adata$admit==1,2:4]
+rejected=Adata[Adata$admit==0,2:4]
+View(admitted)
+View(rejected)
+
+```
+Separated the values for admit value 1 and 0.
+```{r}
+
+ttest99 = t.test(x=admitted$gre, conf.level=0.99)
+ttest99
+ttest99 = t.test(x=rejected$gre, conf.level=0.99)
+ttest99
+ttest99$conf.int
+
+```
+Here upper bound of rejected gre score is 591.3719 where  lower bound of admitted gre score is 593.6276 at conf level 0.99. We can say that there is no overlap at 0.99 level for gre score.
+
+```{r}
+ttest80 = t.test(x=admitted$gre, conf.level=0.80)
+ttest80
+ttest80 = t.test(x=rejected$gre, conf.level=0.80)
+ttest80
+ttest80$conf.int
+
+```
+Here upper bound of rejected gre score is 582.1928 where  lower bound of admitted gre score is 606.4501 at conf level 0.80. We can say that there is no overlap at 0.80 level for gre score.
+### Question 4   
+**Make (box-) plots showing the gre distribution among applicants from different school rankings for the admitted and rejected separately. Please use ggplot for this. The x-variable should be rank, and the y-variable should be gre.**
+
+Answer answer answer. Lorem ipsum dolor sit amet...
+```{r}
+
+library("ggplot2")
+ggplot(admitted, aes(x=rank,y=gre)) + 
+  geom_boxplot() + 
+  geom_boxplot( colour="orange", fill="blue", outlier.colour="red", outlier.shape=8, outlier.size=4) +
+  labs(title="boxplot of gre `admitted`",x="rank", y = "gre")
+
+ggplot(rejected, aes(x=rank,y=gre)) + 
+  geom_boxplot() + 
+  geom_boxplot( colour="red", fill="green", outlier.colour="blue", outlier.shape=8, outlier.size=4) +
+  labs(title="boxplot of gre `rejected`",x="rank", y = "gre")
+```
+### Question 5   
+**Repeat Question 3 for gpa. Do the two groups have t-intervals overlap at 0.80 level? At 0.99 level?**
+
+Answer answer answer. Lorem ipsum dolor sit amet...
+
+```{r}
+
+ttest99 = t.test(x=admitted$gpa,conf.level=0.99)
+ttest99
+ttest99 = t.test(x=rejected$gpa,conf.level=0.99)
+ttest99
+ttest99$conf.int
+
+```
+Here upper bound of rejected gpa  is 3.40 where  lower bound of admitted gpa is 3.40 at conf level 0.90. We can say that there is a overlap at 0.90 level for gpa between admitted and rejected student.
+```{r}
+ttest80 = t.test(x=admitted$gpa,conf.level=0.80)
+ttest80
+ttest80 = t.test(x=rejected$gpa,conf.level=0.80)
+ttest80
+ttest80$conf.int
+```
+Here upper bound of rejected gpa  is 3.373022 where  lower bound of admitted gpa is 3.446894 at conf level 0.80. We can say that there is no overlap at 0.80 level for gpa between admitted and rejected student.
+
+
+### Question 6   
+**Repeat Question 4 for gpa. Make (box-) plots showing the gpa distribution among applicants from different school rankings for the admitted and rejected separately. Again, use ggplot.**
+
+```{r}
+library(ggplot2)
+ggplot(admitted, aes(x=rank,y=gpa)) + 
+  geom_boxplot() + 
+  geom_boxplot( colour="orange", fill="blue", outlier.colour="red", outlier.shape=8, outlier.size=4) +
+  labs(title="boxplot of gpa `admitted`",x="rank", y = "gre")
+
+ggplot(rejected, aes(x=rank,y=gpa)) + 
+  geom_boxplot() + 
+  geom_boxplot( colour="red", fill="green", outlier.colour="blue", outlier.shape=8, outlier.size=4) +
+  labs(title="boxplot of gpa `rejected`",x="rank", y = "gre")
+```
+
+### Question 7  
+**As EDA from the charts and the t-interval calculations you produced, do you observe any potential effects between gre/gpa/rank on admissions? Explain briefly. **
+
+From the box plots I found in question 4 and question 6 shows that student who has the higher gpa and gre score get the acceptance.gre and gpa have effect on admission. I did not find the effect of rank on admission. We can say that rank 1 students with higher gpa and gre  have more chance to get acceptance.
+
+```{r}
+library(ggplot2) 
+ggplot(Adata,aes(admit,gre,fill=admit))+
+  geom_boxplot()+
+  theme_bw()+
+  xlab("Admit")+
+  ylab("GRE")+
+  ggtitle("ADMIT BY GRE")
+
+ggplot(Adata,aes(admit,gpa,fill=admit))+
+  geom_boxplot()+
+  theme_bw()+
+  xlab("Admit")+
+  ylab("GPA")+
+  ggtitle("ADMIT BY GPA")
+
+ggplot(Adata,aes(rank,admit,fill=admit))+
+  geom_col()+
+  xlab("RANK")+
+  ylab("COUNT-ADMIT")+
+  ggtitle("ADMIT BY RANK")
+
+```
+According to the boxplots I have shown in this chunk more students are rejected due to lower gre score. Compared to rejected students admitted students have higher gre score.Similarly gpa effects on admission. More students get rejection due to low gpa. Students get more acceptance respectely from rank2, rank3, rank1, rank 4. There is no effect of rank on admission. In rank2 who has higher gpa and gre gets admission and rest of the students gets the rejection. 
+
+
+
